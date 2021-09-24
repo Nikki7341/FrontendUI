@@ -1,10 +1,10 @@
 .btn1 {
   background-color: white;
   border: none;
-  font-size: large;
+  font-size: medium;
 }
 .mainCard {
-  border-radius: 20%;
+  border-radius: 15%;
   border-color: grey;
   border-width: 1px;
   border-style: solid;

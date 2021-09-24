@@ -18,21 +18,24 @@ const validation_Schema = yup.object({
       email: yup.string()
       .email("Please enter a valid Email")
       .required("Email is required"),
-      password: yup.string().required("Password is required"),
-      rePassword: yup.string()
-  .required("Please confirm your password")
-  .when("password", {
-    is: val => (val && val.length > 0 ? true : false),
-    then: yup.string().oneOf(
-      [yup.ref("password")],
-      "Passwords must match"
-    )
-  })
+      // password: yup.string()
+      // .required("Please enter a password")
+      // .matches(/^(?=.[A-Za-z])(?=.\d)[A-Za-z\d]{8,}$/,"Minimum eight characters, at least one letter and one number")
+      // .min(8, "Password must be at least 8 characters"),
+      // rePassword: yup.string()
+      // .required("Please confirm your password")
+      // .when("password", {
+      //   is: val => (val && val.length > 0 ? true : false),
+      //   then: yup.string().oneOf(
+      //     [yup.ref("password")],
+      //     "Passwords must match"
+      //   )
+      // })
 
 })
 
 
-const Login = () => {
+const Login = ({changeFlagState}) => {
       const [values, setValues] = React.useState({
             amount: '',
             password: '',
@@ -44,7 +47,8 @@ const Login = () => {
            const [checked, setChecked] = React.useState(false);
 
             const handleChange1 = (event) => {
-            setChecked(event.target.checked);
+             setChecked(event.target.checked);
+             checked?localStorage.removeItem('RMe'):localStorage.setItem("RMe","marked");
             };
       
         
@@ -61,7 +65,38 @@ const Login = () => {
 
           ///-------------api call -------------------///
           const postData = (value) => {
-                console.log("post", value)
+            //     console.log("post", value)
+
+                fetch("/signup",{
+                  method:"post",
+                  headers:{
+                      "Content-Type":"application/json"
+                  },
+                  body:JSON.stringify({
+                     fullName:value.full_name,
+                     email:value.email,
+                     password:value.rePassword
+                  })
+              }).then(res=>res.json())
+              .then(data => {
+                  if(data.error){    
+                      // M.toast({html: data.error,classes:"#c62828 red darken-3"})
+                      console.log(data.error)
+                  }else{
+                      console.log(data);
+                      changeFlagState("login");
+                     //  localStorage.setItem("jwt",data.token)
+                     //  localStorage.setItem("user",JSON.stringify(data.user))
+                      // dispatch({type:"USER",payload:data.user})
+                      // M.toast({html: "Signedin Success",classes:"#43a047 green darken-3"})
+                      // history.push('/')
+                  }
+              }).catch(err =>{
+                  console.log(err,value.email);
+              })
+      
+            
+
           }
           
       return (
@@ -163,7 +198,7 @@ const Login = () => {
                         control={
                         <Checkbox checked={checked} onChange={handleChange1} name="jason" />
                         }
-                        label="Remember"
+                        label="Remember me"
                   />
                  </Box>
                  )}

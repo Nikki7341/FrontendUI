@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect} from 'react';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -12,6 +12,7 @@ import { Formik} from "formik";
 import * as yup from "yup";
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { useHistory } from 'react-router-dom'
 
 
 const validation_Schema = yup.object({
@@ -24,6 +25,20 @@ const validation_Schema = yup.object({
 
 
 const Login = () => {
+
+      const history = useHistory();
+     // const {state,dispatch}=useContext(UserContext);
+      useEffect(()=>{
+      const user =JSON.parse( localStorage.getItem("user"));
+        if(user){
+         // dispatch({type:"USER",payload:user})
+           history.push('/home');
+         }else{
+         history.push('/');
+
+         }
+      },[])
+
       const [values, setValues] = React.useState({
             amount: '',
             password: '',
@@ -33,10 +48,17 @@ const Login = () => {
           });
           const [checked, setChecked] = React.useState(false);
           const handleChange1 = (event) => {
-            setChecked(event.target.checked);
+                  setChecked(event.target.checked);
+                  
+                  
+                  // checked?console.log(checked,"unmarked"):console.log(checked,"marked")
+
+                  checked?localStorage.removeItem('RMe'):localStorage.setItem("RMe","marked");
+                  // localStorage.setItem("RMData",false);
             };
         
           const handleClickShowPassword = () => {
+            //     console.log(values);
             setValues({
               ...values,
               showPassword: !values.showPassword,
@@ -47,8 +69,40 @@ const Login = () => {
             event.preventDefault();
           };
           //------------------call api ------------------//
-          const postData = (values) => {
-                console.log(values);
+          const postData = (value) => {
+            //     console.log(value);
+
+                if(localStorage.getItem('RMe')==='marked'){
+                  localStorage.setItem("RMData",JSON.stringify(value));
+                }
+
+                fetch("/signin",{
+                  method:"post",
+                  headers:{
+                      "Content-Type":"application/json"
+                  },
+                  body:JSON.stringify({
+                     email:value.email,
+                     password:value.password
+                  })
+              }).then(res=>res.json())
+              .then(data => {
+                  if(data.error){    
+                      // M.toast({html: data.error,classes:"#c62828 red darken-3"})
+                      console.log(data.error)
+                  }else{
+                      console.log(data);
+                      localStorage.setItem("jwt",data.token)
+                      localStorage.setItem("user",JSON.stringify(data.user))
+                      // dispatch({type:"USER",payload:data.user})
+                      // M.toast({html: "Signedin Success",classes:"#43a047 green darken-3"})
+
+                      history.push('/home')
+                  }
+              }).catch(err =>{
+                  console.log(err,value.email);
+              })
+
           }
       return (
             <div> 
@@ -62,7 +116,7 @@ const Login = () => {
               initialValues={{ email: '', password: '',}}
               validationSchema={validation_Schema}
                 onSubmit={(values, actions) => {
-                  console.log(values);
+                  // console.log(values);
                   postData(values)
                   // actions.resetForm(); 
                 }}
@@ -103,11 +157,11 @@ const Login = () => {
                               onMouseDown={handleMouseDownPassword}
                               edge="end"
                         >
-                              {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                              {values.showPassword===false ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                         </InputAdornment>
                         }
-                        label="Psword"
+                        label="Password"
                   />
                   {touched.password && errors.password ?   <h6 style={{color: 'red'}}>{errors.password}</h6> : null}
                   </FormControl>
