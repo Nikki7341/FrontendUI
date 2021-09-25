@@ -1,10 +1,10 @@
-import { Logout } from '@mui/icons-material';
 import React, {useState} from 'react';
 import Login from './Login';
 import SignUp from './SignUp';
 
 const LandingPage = () => {
       const [toggle, setToggle] = useState("login");
+
       const handleClick = () => {
             if(toggle) {
                   setToggle(false)

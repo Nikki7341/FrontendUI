@@ -23,6 +23,33 @@
 .divider {
   border-top: 2px solid grey;
 }
+#make_border {
+  border-right:  2px solid grey !important;
+}
+
+#logout_button {
+  padding-top: 185px !important;
+}
+.card_bg_color {
+  background-color: #f5f9fa !important;
+}
+.digit {
+  background-color: #edf3f4;
+  padding: 10px;
+  border-radius: 5px;
+  color: #70a195;
+}
+.addto_btn {
+  background-color: #edf3f4 !important;
+  width: 100%;
+  border-style: none;
+  color: #70a195;
+  height: 40px;
+  border-radius: 5px;
+  font-size: large;
+  font-weight: bold;
+  margin: 50px;
+}
 
 .upperDivider {
   border-top: 5px solid grey;
