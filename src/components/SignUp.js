@@ -18,6 +18,7 @@ const validation_Schema = yup.object({
       email: yup.string()
       .email("Please enter a valid Email")
       .required("Email is required"),
+<<<<<<< HEAD
       password: yup.string()
       .required("Please enter a password")
       .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,"Minimum eight characters, at least one letter and one number")
@@ -31,30 +32,63 @@ const validation_Schema = yup.object({
           "Passwords must match"
         )
       })
+=======
+      // password: yup.string()
+      // .required("Please enter a password")
+      // .matches(/^(?=.[A-Za-z])(?=.\d)[A-Za-z\d]{8,}$/,"Minimum eight characters, at least one letter and one number")
+      // .min(8, "Password must be at least 8 characters"),
+      // rePassword: yup.string()
+      // .required("Please confirm your password")
+      // .when("password", {
+      //   is: val => (val && val.length > 0 ? true : false),
+      //   then: yup.string().oneOf(
+      //     [yup.ref("password")],
+      //     "Passwords must match"
+      //   )
+      // })
+
+>>>>>>> 0af978de7551496298079ba88330a8bfd7833069
 })
 
 
-const Login = () => {
-      const [values, setValues] = React.useState({
+const Login = ({changeFlagState}) => {
+      const [value, setValues] = React.useState({
             amount: '',
             password: '',
             weight: '',
             weightRange: '',
             showPassword: false,
+            reshowPassword: false,
           });
 
-           const [checked, setChecked] = React.useState(false);
+           const [checked, setChecked] = React.useState(localStorage.getItem('RMe')==='marked'?true:false);
 
             const handleChange1 = (event) => {
-            setChecked(event.target.checked);
+                  if(localStorage.getItem('RMe')==='marked'){
+                        setChecked(false);
+                        localStorage.removeItem('RMData');
+                  }else{
+                        setChecked(true);
+
+                  }
+            //  setChecked(event.target.checked);
+             checked?localStorage.removeItem('RMe'):localStorage.setItem("RMe","marked");
             };
       
         
           const handleClickShowPassword = () => {
             setValues({
-              ...values,
-              showPassword: !values.showPassword,
+              ...value,
+              showPassword: !value.showPassword,
             });
+            
+          };
+          const handleClickShowPasswordre = () => {
+            setValues({
+              ...value,
+              reshowPassword: !value.reshowPassword,
+            });
+            
           };
         
           const handleMouseDownPassword = (event) => {
@@ -63,7 +97,42 @@ const Login = () => {
 
           ///-------------api call -------------------///
           const postData = (value) => {
-                console.log("post", value)
+            //     console.log("post", value)
+                
+            if(localStorage.getItem('RMe')==='marked'){
+                  localStorage.setItem("RMData",JSON.stringify(value));
+            }
+
+                fetch("/signup",{
+                  method:"post",
+                  headers:{
+                      "Content-Type":"application/json"
+                  },
+                  body:JSON.stringify({
+                     fullName:value.full_name,
+                     email:value.email,
+                     password:value.rePassword
+                  })
+              }).then(res=>res.json())
+              .then(data => {
+                  if(data.error){    
+                      // M.toast({html: data.error,classes:"#c62828 red darken-3"})
+                      console.log(data.error)
+                  }else{
+                      console.log(data);
+                      changeFlagState("login");
+                     //  localStorage.setItem("jwt",data.token)
+                     //  localStorage.setItem("user",JSON.stringify(data.user))
+                      // dispatch({type:"USER",payload:data.user})
+                      // M.toast({html: "Signedin Success",classes:"#43a047 green darken-3"})
+                      // history.push('/')
+                  }
+              }).catch(err =>{
+                  console.log(err,value.email);
+              })
+      
+            
+
           }
           
       return (
@@ -116,7 +185,7 @@ const Login = () => {
                   <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                   <OutlinedInput
                         id="outlined-adornment-password"
-                        type={values.showPassword ? 'text' : 'password'}
+                        type={value.showPassword ? 'text' : 'password'}
                         value={values.password}
                         onChange={handleChange('password')}
                         onBlur={handleBlur('password')}
@@ -128,7 +197,7 @@ const Login = () => {
                               onMouseDown={handleMouseDownPassword}
                               edge="end"
                         >
-                              {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                              {value.showPassword ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
                         </InputAdornment>
                         }
@@ -140,7 +209,7 @@ const Login = () => {
                   <InputLabel htmlFor="outlined-adornment-password">Re-Password</InputLabel>
                   <OutlinedInput
                         id="outlined-adornment-password"
-                        type={values.showPassword ? 'text' : 'password'}
+                        type={value.reshowPassword ? 'text' : 'password'}
                         value={values.rePassword}
                         onChange={handleChange('rePassword')}
                         onBlur={handleBlur('rePassword')}
@@ -148,11 +217,11 @@ const Login = () => {
                         <InputAdornment position="end">
                         <IconButton
                               aria-label="toggle password visibility"
-                              onClick={handleClickShowPassword}
+                              onClick={handleClickShowPasswordre}
                               onMouseDown={handleMouseDownPassword}
                               edge="end"
                         >
-                              {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                              {value.reshowPassword ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
                         </InputAdornment>
                         }
@@ -165,7 +234,7 @@ const Login = () => {
                         control={
                         <Checkbox checked={checked} onChange={handleChange1} name="jason" />
                         }
-                        label="Remember"
+                        label="Remember me"
                   />
                  </Box>
                  )}
