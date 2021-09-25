@@ -36,27 +36,43 @@ const validation_Schema = yup.object({
 
 
 const Login = ({changeFlagState}) => {
-      const [values, setValues] = React.useState({
+      const [value, setValues] = React.useState({
             amount: '',
             password: '',
             weight: '',
             weightRange: '',
             showPassword: false,
+            reshowPassword: false,
           });
 
-           const [checked, setChecked] = React.useState(false);
+           const [checked, setChecked] = React.useState(localStorage.getItem('RMe')==='marked'?true:false);
 
             const handleChange1 = (event) => {
-             setChecked(event.target.checked);
+                  if(localStorage.getItem('RMe')==='marked'){
+                        setChecked(false);
+                        localStorage.removeItem('RMData');
+                  }else{
+                        setChecked(true);
+
+                  }
+            //  setChecked(event.target.checked);
              checked?localStorage.removeItem('RMe'):localStorage.setItem("RMe","marked");
             };
       
         
           const handleClickShowPassword = () => {
             setValues({
-              ...values,
-              showPassword: !values.showPassword,
+              ...value,
+              showPassword: !value.showPassword,
             });
+            
+          };
+          const handleClickShowPasswordre = () => {
+            setValues({
+              ...value,
+              reshowPassword: !value.reshowPassword,
+            });
+            
           };
         
           const handleMouseDownPassword = (event) => {
@@ -66,6 +82,10 @@ const Login = ({changeFlagState}) => {
           ///-------------api call -------------------///
           const postData = (value) => {
             //     console.log("post", value)
+                
+            if(localStorage.getItem('RMe')==='marked'){
+                  localStorage.setItem("RMData",JSON.stringify(value));
+            }
 
                 fetch("/signup",{
                   method:"post",
@@ -149,7 +169,7 @@ const Login = ({changeFlagState}) => {
                   <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                   <OutlinedInput
                         id="outlined-adornment-password"
-                        type={values.showPassword ? 'text' : 'password'}
+                        type={value.showPassword ? 'text' : 'password'}
                         value={values.password}
                         onChange={handleChange('password')}
                         onBlur={handleBlur('password')}
@@ -161,7 +181,7 @@ const Login = ({changeFlagState}) => {
                               onMouseDown={handleMouseDownPassword}
                               edge="end"
                         >
-                              {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                              {value.showPassword ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
                         </InputAdornment>
                         }
@@ -173,7 +193,7 @@ const Login = ({changeFlagState}) => {
                   <InputLabel htmlFor="outlined-adornment-password">Re-Password</InputLabel>
                   <OutlinedInput
                         id="outlined-adornment-password"
-                        type={values.showPassword ? 'text' : 'password'}
+                        type={value.reshowPassword ? 'text' : 'password'}
                         value={values.rePassword}
                         onChange={handleChange('rePassword')}
                         onBlur={handleBlur('rePassword')}
@@ -181,11 +201,11 @@ const Login = ({changeFlagState}) => {
                         <InputAdornment position="end">
                         <IconButton
                               aria-label="toggle password visibility"
-                              onClick={handleClickShowPassword}
+                              onClick={handleClickShowPasswordre}
                               onMouseDown={handleMouseDownPassword}
                               edge="end"
                         >
-                              {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                              {value.reshowPassword ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
                         </InputAdornment>
                         }

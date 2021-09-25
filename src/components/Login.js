@@ -39,16 +39,23 @@ const Login = () => {
          }
       },[])
 
-      const [values, setValues] = React.useState({
+      const [value, setValues] = React.useState({
             amount: '',
             password: '',
             weight: '',
             weightRange: '',
             showPassword: false,
           });
-          const [checked, setChecked] = React.useState(false);
+          const [checked, setChecked] = React.useState(localStorage.getItem('RMe')==='marked'?true:false);
           const handleChange1 = (event) => {
-                  setChecked(event.target.checked);
+                  // setChecked(event.target.checked);
+                  if(localStorage.getItem('RMe')==='marked'){
+                    setChecked(false);
+                    localStorage.removeItem('RMData');
+                  }else{
+                    setChecked(true);
+
+                  }
                   
                   
                   // checked?console.log(checked,"unmarked"):console.log(checked,"marked")
@@ -60,17 +67,19 @@ const Login = () => {
           const handleClickShowPassword = () => {
             //     console.log(values);
             setValues({
-              ...values,
-              showPassword: !values.showPassword,
+              ...value,
+              showPassword: !value.showPassword,
             });
           };
         
           const handleMouseDownPassword = (event) => {
             event.preventDefault();
           };
+
+          
           //------------------call api ------------------//
           const postData = (value) => {
-            //     console.log(value);
+                // console.log(value);
 
                 if(localStorage.getItem('RMe')==='marked'){
                   localStorage.setItem("RMData",JSON.stringify(value));
@@ -113,7 +122,7 @@ const Login = () => {
                   <h2>To continue</h2>
                  <h6>We need your name & email </h6>
                  <Formik
-              initialValues={{ email: '', password: '',}}
+              initialValues={{ email: localStorage.getItem('RMe')==='marked' && localStorage.getItem('RMData')  ? JSON.parse(localStorage.getItem('RMData')).email:'', password: localStorage.getItem('RMe')==='marked' && localStorage.getItem('RMData')  ? JSON.parse(localStorage.getItem('RMData')).password:'',}}
               validationSchema={validation_Schema}
                 onSubmit={(values, actions) => {
                   // console.log(values);
@@ -138,15 +147,15 @@ const Login = () => {
                  className="inputRounded"
                  onBlur={handleBlur('email')}
                 onChange={handleChange('email')}
-                value={values.email}
+                value={localStorage.getItem('RMe')==='marked' && localStorage.getItem('RMData')  ? JSON.parse(localStorage.getItem('RMData')).email:values.email}
                  />
                  {touched.email && errors.email ?   <h6 style={{color: 'red'}}>{errors.email}</h6> : null}
                   <FormControl className="inputRounded" variant="outlined">
                   <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                   <OutlinedInput
                         id="outlined-adornment-password"
-                        type={values.showPassword ? 'text' : 'password'}
-                        value={values.password}
+                        type={value.showPassword ? 'text' : 'password'}
+                        value={localStorage.getItem('RMe')==='marked' && localStorage.getItem('RMData')  ? JSON.parse(localStorage.getItem('RMData')).password:values.password}
                         onChange={handleChange('password')}
                         onBlur={handleBlur('password')}
                         endAdornment={
@@ -157,7 +166,7 @@ const Login = () => {
                               onMouseDown={handleMouseDownPassword}
                               edge="end"
                         >
-                              {values.showPassword===false ? <VisibilityOff /> : <Visibility />}
+                              {value.showPassword===false ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                         </InputAdornment>
                         }

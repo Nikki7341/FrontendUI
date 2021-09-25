@@ -20,7 +20,7 @@ const LandingPage = () => {
   // }
   return (
     <div>
-      <div className="row">
+      <div className="row p-5">
         <div className="col-md-6">
           <h1>Image</h1>
         </div>
