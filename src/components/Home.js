@@ -19,35 +19,52 @@ import CARD from "./Card"
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import { useHistory } from 'react-router-dom';
+// import DialogContent from '@mui/material/DialogContent';
+// import DialogContentText from '@mui/material/DialogContentText';
+// import DialogTitle from '@mui/material/DialogTitle';
 
 const Home = () => {
+      const history = useHistory();
       const [open, setOpen] = useState(false);
-      const taskData = [
-                        {_id:'1234',status: "1", title: 'test 1',description: 'none 1'},
-                        {_id:'1235',status: "2", title: 'test 2',description: 'none 2'},
-                        {_id:'1236',status: "1", title: 'test 1',description: 'none 1'},
-                        {_id:'1237',status: "2", title: 'test 2',description: 'none 2'},
-                        {_id:'1238',status: "3", title: 'test 3',description: 'none 3'},
-                        {_id:'1239',status: "2", title: 'test 2',description: 'none 2'},
-                        {_id:'1230',status: "3", title: 'test 3',description: 'none 3'}
-                        ]
+      const [taskData,settaskData]=useState([]);
+      // const taskData = [
+      //                   {_id:'1234',status: "1", title: 'test 1',description: 'none 1'},
+      //                   {_id:'1235',status: "2", title: 'test 2',description: 'none 2'},
+      //                   {_id:'1236',status: "1", title: 'test 1',description: 'none 1'},
+      //                   {_id:'1237',status: "2", title: 'test 2',description: 'none 2'},
+      //                   {_id:'1238',status: "3", title: 'test 3',description: 'none 3'},
+      //                   {_id:'1239',status: "2", title: 'test 2',description: 'none 2'},
+      //                   {_id:'1230',status: "3", title: 'test 3',description: 'none 3'}
+      //                   ]
 
       const handleClickOpen = () => {
         setOpen(true);
       };
+
+      useEffect(()=>{
+            fetch("/alltask",{
+                headers:{
+                    "Authorization":"iCareerD "+localStorage.getItem("jwt")
+                }
+            }).then(res=> res.json())
+            .then(result =>{
+            //     setPics(result.mypost)
+            // console.log(result.tasks)
+            settaskData(result.tasks)
+           
+            })
+          },[])
     
-      const handleClose = () => {
-        setOpen(false);
-      };
+      const handleClose = (flag) => {
+            if(flag==='Y'){
+                localStorage.removeItem('jwt');
+                localStorage.removeItem('user');
+                history.push('/signin');
 
-      const eraseData = () => {
-            ///////////////////////---------------------delete credintials -------------
+            }
             setOpen(false);
-      }
-
+      };
       
       return (
             <div>
@@ -132,8 +149,8 @@ const Home = () => {
                                                 <div className="p-5">
                                                 <h1>Do you Want to Log out! </h1>
                                                 <DialogActions>
-                                                <Button onClick={handleClose}>yes</Button>
-                                                <Button onClick={handleClose} autoFocus>
+                                                <Button onClick={()=>handleClose('Y')}>yes</Button>
+                                                <Button onClick={()=>handleClose('N')} autoFocus>
                                                       No
                                                 </Button>
                                                 </DialogActions>

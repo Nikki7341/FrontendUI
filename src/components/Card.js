@@ -4,6 +4,7 @@ import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import TextField from '@mui/material/TextField';
+// import EDITICON from '@mui/icons-material/Edit';
 import { Formik} from "formik";
 import * as yup from "yup";
 
@@ -16,45 +17,130 @@ const validation_Schema = yup.object({
 
 export default function BasicCard({heading , id, taskData}) {
       const [open, setOpen] = React.useState(false);
+      const [open1, setOpen1] = React.useState(false);
 
-      const [values, setValues] = React.useState({
-            title: '',
-            description: '',
-            id: ''
-      })
+      // const [values, setValues] = React.useState({
+      //       title: '',
+      //       description: '',
+      //       id: ''
+      // })
 
-      console.log(taskData)
+      // console.log(taskData)
 
-  const handleClickOpen = (x) => {
-        console.log(x)
+  const handleClickOpen = () => {
+        // console.log(x)
     setOpen(true);
+  };
+
+  const handleClickOpen1 = (x) => {
+        // console.log("edditt",x)
+    setOpen1(true);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
+  const handleClose1 = () => {
+    setOpen1(false);
+  };
 
-  const callApi = (values) => {
+  async function callApi(values) {
       values.status = id
-      taskData.push(values)
-      console.log(taskData);
+      
+      await fetch("/addtask",{
+        method:"post",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          userid:JSON.parse(localStorage.getItem('user'))._id,
+          title:values.title,
+          description:values.description,
+          status:id
+        })
+    }).then(res=>res.json())
+    .then(data => {
+        if(data.error){    
+            // M.toast({html: data.error,classes:"#c62828 red darken-3"})
+            console.log(data.error)
+        }else{
+            // console.log(data.task);
+            taskData.push(data.task)
+            // console.log(taskData);
+            // window.location.reload();
+        }
+    }).catch(err =>{
+        console.log(err);
+    })
+
+
+      // taskData.push(values)
+      // console.log(taskData);
       setOpen(false);
       ////--------------------API Call --------------------------------------------------
   }
 
 ///---------------api for edit --------------------------------------
-  const EditApi = (values, id) => {
+  async function EditApi(values, id){
         console.log(values, id);
-        taskData.filter(x => x._id === id)[0].title = values.title
-        taskData.filter(x => x._id === id)[0].description = values.description
-        console.log(taskData)
-      setOpen(false);
+        
+        await fetch("/titleupdate",{
+          method:"put",
+          headers:{
+              "Content-Type":"application/json"
+          },
+          body:JSON.stringify({
+            taskid:id,
+            updatetitle:values.editTitle,
+          })
+         }).then(res=>res.json())
+         .then(data => {
+          if(data.error){    
+              // M.toast({html: data.error,classes:"#c62828 red darken-3"})
+              console.log(data.error)
+          }else{
+              taskData.filter(x => x._id === id)[0].title = values.editTitle
+              // console.log(data.task);
+              // taskData.push(data.task)
+              // console.log(taskData);
+              // window.location.reload();
+          }
+           }).catch(err =>{
+           console.log(err);
+      })
+
+
+      await fetch("/desupdate",{
+        method:"put",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          taskid:id,
+          description:values.editDescription,
+        })
+    }).then(res=>res.json())
+    .then(data => {
+        if(data.error){    
+            // M.toast({html: data.error,classes:"#c62828 red darken-3"})
+            console.log(data.error)
+        }else{
+          taskData.filter(x => x._id === id)[0].description = values.editDescription
+          
+        }
+    }).catch(err =>{
+        console.log(err);
+    })
+
+        // console.log(taskData.filter(x => x._id === id))
+      console.log(taskData)
+      setOpen1(false);
 
   }
 
   useEffect(() => {
-      console.log("test")
-}, [open])
+      // console.log("test")
+}, [open,open1])
 
   return (
     <Card sx={{ minWidth: 275, minHeight: 600 }} className="card_bg_color p-4" id={id}>
@@ -119,20 +205,20 @@ export default function BasicCard({heading , id, taskData}) {
             taskData.filter(x => x.status === id).map(x => {
                   return (
                         <Card sx={{ minWidth: 275 }} className="p-4 m-2" id={x._id}>
-                        <button onClick={() => handleClickOpen(x)}>edit</button>
+                        <button onClick={() => handleClickOpen1(x)}>edit</button>
                         <h4>{x.title}</h4>
                         <h6>{x.description}</h6>
                         {/* //////------------------mapping------------------------//// */}
                         <Dialog
-        open={open}
-        onClose={handleClose}
+        open={open1}
+        onClose={handleClose1}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
        <Formik
               initialValues={{ editTitle: x.title, editDescription: x.description,}}
                 onSubmit={(values, actions) => {
-                  console.log(values);
+                  // console.log(values);
                   EditApi(values, x._id)
                 }}
               >
@@ -164,6 +250,9 @@ export default function BasicCard({heading , id, taskData}) {
 
       
       <Button onClick={handleSubmit}>Edit</Button>
+      {/* <EDITICON /> */}
+     
+      
 
       </div>
 

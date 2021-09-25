@@ -18,21 +18,6 @@ const validation_Schema = yup.object({
       email: yup.string()
       .email("Please enter a valid Email")
       .required("Email is required"),
-<<<<<<< HEAD
-      password: yup.string()
-      .required("Please enter a password")
-      .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,"Minimum eight characters, at least one letter and one number")
-      .min(8, "Password must be at least 8 characters"),
-      rePassword: yup.string()
-      .required("Please confirm your password")
-      .when("password", {
-        is: val => (val && val.length > 0 ? true : false),
-        then: yup.string().oneOf(
-          [yup.ref("password")],
-          "Passwords must match"
-        )
-      })
-=======
       // password: yup.string()
       // .required("Please enter a password")
       // .matches(/^(?=.[A-Za-z])(?=.\d)[A-Za-z\d]{8,}$/,"Minimum eight characters, at least one letter and one number")
@@ -47,7 +32,6 @@ const validation_Schema = yup.object({
       //   )
       // })
 
->>>>>>> 0af978de7551496298079ba88330a8bfd7833069
 })
 
 

@@ -4,7 +4,7 @@ import "bootstrap/dist/js/bootstrap.bundle";
 import React, { useEffect} from 'react';
 import { BrowserRouter, Route, Switch, useHistory } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
-import Home from "./components/Home";
+import HOME from "./components/Home";
 
 
 
@@ -15,7 +15,7 @@ const Routing = () => {
      const user =JSON.parse( localStorage.getItem("user"));
      if(user){
         // dispatch({type:"USER",payload:user})
-      //   history.push('/');
+        history.push('/home');
      }else{
         history.push('/');
 
@@ -35,7 +35,7 @@ const Routing = () => {
           <LandingPage />
        </Route>
        <Route path="/home">
-          <h1>home page</h1>
+          <HOME />
        </Route>
     </Switch>
 
@@ -47,15 +47,9 @@ const Routing = () => {
 function App() {
   return (
     <div className="App">
-<<<<<<< HEAD
-     <div className="container-fluid">
-       <Home />
-     </div>
-=======
        <BrowserRouter>
             <Routing />
          </BrowserRouter>
->>>>>>> 0af978de7551496298079ba88330a8bfd7833069
     </div>
   );
 }

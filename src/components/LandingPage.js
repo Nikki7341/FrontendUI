@@ -1,22 +1,4 @@
-<<<<<<< HEAD
-import React, {useState} from 'react';
-import Login from './Login';
-import SignUp from './SignUp';
-
-const LandingPage = () => {
-      const [toggle, setToggle] = useState("login");
-
-      const handleClick = () => {
-            if(toggle) {
-                  setToggle(false)
-            } else {
-                  setToggle(true)
-            }
-      }
-      return (
-            <div>
-=======
-import { Logout } from "@mui/icons-material";
+// import { Logout } from "@mui/icons-material";
 import React, { useState } from "react";
 import LOGIN from "./Login";
 import SIGNUP from "./SignUp";
@@ -44,7 +26,6 @@ const LandingPage = () => {
         </div>
         <div className="col-md-6">
           <div className="mainCard p-5">
->>>>>>> 0af978de7551496298079ba88330a8bfd7833069
             <div className="row">
               <div className="col-md-3">
                 <button
