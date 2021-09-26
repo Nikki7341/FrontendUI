@@ -28,7 +28,7 @@
 }
 
 #logout_button {
-  padding-top: 185px !important;
+  padding-top: 170px !important;
 }
 .card_bg_color {
   background-color: #f5f9fa !important;
@@ -66,5 +66,9 @@
   color: white;
   background-color: #398555;
   border-color: #398555;
+}
 
+#iconplace{
+  display:flex;
+  /* float:left; */
 }

@@ -187,13 +187,13 @@ const Home = () => {
                                          </div>
                                          <div className="row">
                                                <div className="col-md-4 p-3">
-                                                <CARD heading="Project" id={'3'} taskData={taskData} />
+                                                <CARD heading="Project" id={'3'} taskData={taskData} settaskData={settaskData}/>
                                                </div>
                                                <div className="col-md-4 p-3">
-                                               <CARD heading="In Progress" id={'2'} taskData={taskData}/>
+                                               <CARD heading="In Progress" id={'2'} taskData={taskData} settaskData={settaskData}/>
                                                 </div>
                                                 <div className="col-md-4 p-3">
-                                                <CARD heading="Completed" id={'1'} taskData={taskData}/>
+                                                <CARD heading="Completed" id={'1'} taskData={taskData} settaskData={settaskData}/>
                                                 </div>
                                          </div>
                                    </div>
